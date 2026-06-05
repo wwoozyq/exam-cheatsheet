@@ -1,0 +1,132 @@
+% !TEX program = xelatex
+\documentclass[lang=zh,cols=4,paper=a4,fontsize=6.5pt,scheme=classic]{../cheatsheet}
+
+\begin{document}
+\startcols
+
+\section{排序算法}
+
+\begin{cmpbox}[冒泡 vs 选择 vs 插入]
+冒泡：相邻交换、稳定、$O(n^2)$\\
+选择：找最小放前、不稳定、$O(n^2)$\\
+插入：逐个插有序区、稳定、$O(n^2)$最优$O(n)$
+\end{cmpbox}
+
+\begin{thmbox}[快速排序]
+分治：选pivot $\to$ partition $\to$ 递归\\
+均摊$O(n\log n)$、最坏$O(n^2)$（已排序）\\
+不稳定、原地、cache友好
+\end{thmbox}
+
+\begin{formula}[归并排序]
+$T(n) = 2T(n/2) + O(n) \imp O(n\log n)$\\
+稳定、非原地（需$O(n)$额外空间）
+\end{formula}
+
+\subsection{非比较排序}
+\begin{itemize}
+\item 计数排序：$O(n+k)$、稳定、$k$为值域
+\item 基数排序：$O(d(n+k))$、稳定、$d$为位数
+\item 桶排序：$O(n+k)$均摊、分布均匀时最优
+\end{itemize}
+
+\section{树}
+
+\subsection{二叉搜索树 BST}
+性质：左$<$根$<$右\\
+查找/插入/删除：均摊$O(\log n)$最坏$O(n)$
+
+\begin{cmpbox}[AVL vs 红黑树]
+AVL：严格平衡$|h_L - h_R| \le 1$、查找快、插删多旋转\\
+红黑：弱平衡（黑高相等）、插删少旋转、工程常用
+\end{cmpbox}
+
+\subsection{堆}
+\begin{enumerate}
+\item 完全二叉树、数组存储
+\item 大顶堆：parent $\ge$ child
+\item 建堆$O(n)$、插入/删除$O(\log n)$
+\item 堆排序：建堆$+$逐个取顶 $\imp O(n\log n)$不稳定
+\end{enumerate}
+
+\begin{warnbox}[易错]
+堆排序是原地但不稳定！\\
+优先队列 $\ne$ 堆（是抽象，堆是实现）
+\end{warnbox}
+
+\section{图}
+
+\subsection{存储}
+邻接矩阵：$O(V^2)$空间、查边$O(1)$\\
+邻接表：$O(V+E)$空间、遍历邻居快
+
+\begin{cmpbox}[BFS vs DFS]
+BFS：队列、层序、最短路（无权）、空间$O(V)$\\
+DFS：栈/递归、回溯、拓扑排序、空间$O(h)$
+\end{cmpbox}
+
+\subsection{最短路}
+
+\begin{thmbox}[Dijkstra]
+贪心、非负权、$O((V+E)\log V)$（优先队列）\\
+松弛：$d[v] = \min(d[v],\; d[u]+w(u,v))$
+\end{thmbox}
+
+\begin{thmbox}[Bellman-Ford]
+$V-1$轮松弛所有边、可处理负权\\
+$O(VE)$；第$V$轮仍可松弛$\imp$存在负环
+\end{thmbox}
+
+\begin{formula}[Floyd-Warshall]
+$dp[i][j] = \min(dp[i][j],\; dp[i][k]+dp[k][j])$\\
+全源最短路、$O(V^3)$、可检测负环（对角线$<0$）
+\end{formula}
+
+\begin{cmpbox}[Kruskal vs Prim]
+Kruskal：排序边$+$并查集、$O(E\log E)$、稀疏图优\\
+Prim：贪心扩展点集、$O((V+E)\log V)$、稠密图优
+\end{cmpbox}
+
+\section{动态规划}
+
+\subsection{思路框架}
+\begin{enumerate}
+\item 定义状态（子问题）
+\item 写转移方程
+\item 确定边界/初始值
+\item 确定计算顺序
+\item 答案位置
+\end{enumerate}
+
+\begin{formula}[经典DP]
+背包：$dp[i][w] = \max(dp[i\!-\!1][w],\; dp[i\!-\!1][w\!-\!w_i]+v_i)$\\
+LCS：$dp[i][j] = dp[i\!-\!1][j\!-\!1]+1$（匹配）$|\max(dp[i\!-\!1][j], dp[i][j\!-\!1])$\\
+LIS：$O(n\log n)$贪心+二分 or $O(n^2)$ DP
+\end{formula}
+
+\begin{warnbox}[状压DP]
+状态用二进制表示集合：第$i$位为1表示选了$i$\\
+枚举子集：\texttt{for(s=S;s;s=(s-1)\&S)}\\
+复杂度通常$O(2^n \cdot n)$或$O(3^n)$
+\end{warnbox}
+
+\section{基础数据结构}
+
+\begin{cmpbox}[栈 vs 队列 vs 双端队列]
+栈：LIFO、push/pop $O(1)$\\
+队列：FIFO、enqueue/dequeue $O(1)$\\
+双端队列：两端均可操作$O(1)$
+\end{cmpbox}
+
+\subsection{哈希表}
+开放寻址 vs 链地址法\\
+负载因子$\alpha = n/m$\\
+均摊$O(1)$ 查找/插入/删除
+
+\begin{codebox}[并查集模板]
+int find(int x){return fa[x]==x?x:fa[x]=find(fa[x]);}
+void unite(int x,int y){fa[find(x)]=find(y);}
+\end{codebox}
+
+\stopcols
+\end{document}

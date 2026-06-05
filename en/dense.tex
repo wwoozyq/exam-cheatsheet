@@ -1,0 +1,111 @@
+% !TEX program = xelatex
+\documentclass[lang=en,cols=5,paper=a4,fontsize=6pt,scheme=classic]{../cheatsheet}
+
+\begin{document}
+\startcols
+
+\section{Sorting}
+\concept{Bubble}: adjacent swap, stable, $O(n^2)$\\
+\concept{Selection}: find min, unstable, $O(n^2)$\\
+\concept{Insertion}: into sorted region, stable, best $O(n)$ worst $O(n^2)$\\
+\concept{Quicksort}: pick pivot$\to$partition$\to$recurse, avg $O(n\log n)$ worst $O(n^2)$ (sorted), unstable, in-place, cache-friendly\\
+\concept{Mergesort}: $T(n)=2T(n/2)+O(n)\imp O(n\log n)$, stable, $O(n)$ extra space\\
+\concept{Heapsort}: build $O(n)$+extract, $O(n\log n)$, \compare{in-place but unstable}\\
+\concept{Counting}: $O(n+k)$ stable, $k$=range\\
+\concept{Radix}: $O(d(n+k))$ stable, $d$=digits\\
+\concept{Bucket}: $O(n+k)$ avg, best w/ uniform dist.
+
+\section{Trees}
+\subsection{BST}
+left$<$root$<$right, search/insert/delete avg $O(\log n)$ worst $O(n)$
+
+\compare{AVL vs Red-Black}: AVL strict $|h_L-h_R|\le1$ fast lookup more rotations; RB relaxed (equal black-height) fewer rotations used in practice
+
+\subsection{Heap}
+Complete binary tree, array storage, max-heap: parent$\ge$child\\
+Build $O(n)$, insert/delete $O(\log n)$\\
+\compare{Priority queue$\ne$heap} (abstract vs implementation)
+
+\subsection{B-Tree / B+Tree}
+B-tree: order $m$, each node $\lceil m/2\rceil$\textasciitilde$m$ children, all leaves same depth\\
+B+tree: data only in leaves, leaves linked, range queries fast\\
+Used in: DB indexes, filesystems
+
+\subsection{Trie}
+Prefix tree, insert/search $O(|s|)$, space-heavy\\
+Compressed trie (Patricia) saves space
+
+\section{Graphs}
+Adj.\ matrix $O(V^2)$ space $O(1)$ edge query | Adj.\ list $O(V+E)$ fast traversal
+
+\compare{BFS vs DFS}: BFS queue level-order shortest (unweighted) space $O(V)$; DFS stack/recursion backtracking topo-sort space $O(h)$
+
+\subsection{Shortest Path}
+\concept{Dijkstra}: greedy, non-neg weights, $O((V+E)\log V)$ w/ pq, relax $d[v]=\min(d[v],d[u]+w(u,v))$\\
+\concept{Bellman-Ford}: $V$-1 rounds relax all edges, neg weights ok, $O(VE)$, round $V$ relaxable$\imp$neg cycle\\
+\concept{Floyd}: $dp[i][j]=\min(dp[i][j],dp[i][k]+dp[k][j])$, all-pairs $O(V^3)$, diag$<0\imp$neg cycle\\
+\concept{SPFA}: BF w/ queue, avg fast but worst $O(VE)$, use Dijkstra when TLE
+
+\subsection{MST}
+\concept{Kruskal}: sort edges+union-find $O(E\log E)$ sparse\\
+\concept{Prim}: greedy vertex expansion $O((V+E)\log V)$ dense\\
+\compare{Cut property}: lightest edge crossing any cut is in some MST
+
+\subsection{Topological Sort}
+DAG detection, BFS (Kahn's in-degree) or DFS post-order reverse\\
+No topo order$\iff$cycle exists
+
+\subsection{SCC}
+Tarjan: DFS order+low values, stack, $O(V+E)$\\
+Kosaraju: two DFS passes (forward+reverse graph)
+
+\section{Dynamic Programming}
+\process{Framework}: 1.Define state 2.Recurrence 3.Base cases 4.Computation order 5.Answer location
+
+\begin{formula}[Core DP]
+0/1 Knapsack: $dp[w]=\max(dp[w],dp[w-w_i]+v_i)$ (reverse)\\
+Unbounded: same but forward order\\
+LCS: $dp[i][j]=dp[i-1][j-1]+1$ (match) $|\max(dp[i-1][j],dp[i][j-1])$\\
+LIS: $O(n\log n)$ greedy+bisect or $O(n^2)$ DP\\
+Interval: $dp[i][j]=\min_k(dp[i][k]+dp[k+1][j]+cost)$
+\end{formula}
+
+Bitmask DP: binary set repr, enum subsets \texttt{for(s=S;s;s=(s-1)\&S)}, $O(2^n\cdot n)$ or $O(3^n)$\\
+Tree DP: DFS post-order, $dp[u]$ merged from children\\
+Digit DP: digit-by-digit, track tight bound, count valid numbers
+
+\subsection{Optimizations}
+Rolling array $O(n)\to O(1)$ or $O(W)$ | Monotone deque/stack sliding window $O(n)$ | CHT when decision monotone $O(n)$ | Knuth's opt interval DP $O(n^2)$
+
+\section{Basic Structures}
+Stack LIFO, Queue FIFO, Deque both ends $O(1)$\\
+\concept{Monotone stack}: maintain inc/dec, find first larger/smaller $O(n)$\\
+\concept{Monotone deque}: sliding window extrema $O(n)$
+
+\subsection{Hash Table}
+Open addressing vs chaining, load factor $\alpha=n/m$\\
+Collision: linear probing, quadratic, double hashing\\
+Amortized $O(1)$ lookup/insert/delete\\
+\compare{Hash flooding}: crafted keys$\to$same bucket$\to$$O(n)$ degrade
+
+\subsection{Union-Find}
+Path compression+union by rank$\to$amortized $O(\alpha(n))\approx O(1)$\\
+\texttt{find(x):fa[x]==x?x:fa[x]=find(fa[x])}\\
+\texttt{unite(x,y):fa[find(x)]=find(y)}
+
+\section{Strings}
+\concept{KMP}: failure function next[], $O(n+m)$\\
+\concept{Rabin-Karp}: rolling hash, avg $O(n+m)$ worst $O(nm)$\\
+\concept{Manacher}: longest palindrome substr $O(n)$\\
+\concept{Suffix Array}: sa[] sorted suffixes, lcp[] longest common prefix, build $O(n\log n)$
+
+\section{Math}
+\concept{GCD}: $\gcd(a,b)=\gcd(b,a\bmod b)$, $O(\log\min(a,b))$\\
+\concept{Extended Euclid}: $ax+by=\gcd(a,b)$\\
+\concept{Fast power}: $a^n\bmod p$, $O(\log n)$\\
+\concept{Fermat's little}: $p$ prime$\imp a^{p-1}\equiv1\pmod{p}$\\
+Inverse $a^{-1}\equiv a^{p-2}\pmod{p}$ ($p$ prime)\\
+\concept{Binomial}: $C(n,k)=C(n-1,k-1)+C(n-1,k)$, Lucas: $C(n,k)\equiv C(n/p,k/p)\cdot C(n\%p,k\%p)\pmod{p}$
+
+\stopcols
+\end{document}

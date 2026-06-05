@@ -1,0 +1,111 @@
+% !TEX program = xelatex
+\documentclass[lang=zh,cols=5,paper=a4,fontsize=6pt,scheme=classic]{../cheatsheet}
+
+\begin{document}
+\startcols
+
+\section{排序}
+\concept{冒泡}：相邻交换、稳定、$O(n^2)$\\
+\concept{选择}：找最小放前、不稳定、$O(n^2)$\\
+\concept{插入}：逐个插有序区、稳定、最优$O(n)$最坏$O(n^2)$\\
+\concept{快排}：选pivot$\to$partition$\to$递归、均$O(n\log n)$最坏$O(n^2)$（已排序）、不稳定、原地、cache友好\\
+\concept{归并}：$T(n)=2T(n/2)+O(n)\imp O(n\log n)$、稳定、需$O(n)$额外空间\\
+\concept{堆排}：建堆$O(n)$+逐个取顶、$O(n\log n)$、\compare{原地但不稳定}\\
+\concept{计数}：$O(n+k)$稳定、$k$为值域\\
+\concept{基数}：$O(d(n+k))$稳定、$d$为位数\\
+\concept{桶}：$O(n+k)$均摊、分布均匀时最优
+
+\section{树}
+\subsection{BST}
+左$<$根$<$右、查找/插入/删除均摊$O(\log n)$最坏$O(n)$
+
+\compare{AVL vs 红黑}：AVL严格$|h_L-h_R|\le1$查找快但插删多旋转；红黑弱平衡（黑高相等）插删少旋转工程常用
+
+\subsection{堆}
+完全二叉树数组存储、大顶堆parent$\ge$child\\
+建堆$O(n)$、插入/删除$O(\log n)$\\
+\compare{优先队列$\ne$堆}（抽象vs实现）
+
+\subsection{B树/B+树}
+B树：$m$阶每个节点$\lceil m/2\rceil$\textasciitilde$m$个子、所有叶等高\\
+B+树：数据只在叶子、叶链表串联、范围查询快\\
+应用：数据库索引、文件系统
+
+\subsection{Trie}
+前缀树、插入/查找$O(|s|)$、空间换时间\\
+压缩Trie（Patricia）减空间
+
+\section{图}
+邻接矩阵$O(V^2)$空间查边$O(1)$ | 邻接表$O(V+E)$遍历快
+
+\compare{BFS vs DFS}：BFS队列层序最短路（无权）空间$O(V)$；DFS栈/递归回溯拓扑排序空间$O(h)$
+
+\subsection{最短路}
+\concept{Dijkstra}：贪心非负权$O((V+E)\log V)$、松弛$d[v]=\min(d[v],d[u]+w(u,v))$\\
+\concept{Bellman-Ford}：$V$-1轮松弛所有边、可负权、$O(VE)$、第$V$轮可松弛$\imp$负环\\
+\concept{Floyd}：$dp[i][j]=\min(dp[i][j],dp[i][k]+dp[k][j])$、全源$O(V^3)$、对角线$<0$有负环\\
+\concept{SPFA}：BF队列优化、均摊快但最坏$O(VE)$、被卡时换Dijkstra
+
+\subsection{MST}
+\concept{Kruskal}：排序边+并查集$O(E\log E)$稀疏图优\\
+\concept{Prim}：贪心扩展点集$O((V+E)\log V)$稠密图优\\
+\compare{切割性质}：跨越切割的最小边一定在某个MST中
+
+\subsection{拓扑排序}
+DAG判定、BFS（Kahn入度法）或DFS后序反转\\
+无法拓扑排序$\iff$有环
+
+\subsection{强连通分量}
+Tarjan：DFS序+low值、栈维护、$O(V+E)$\\
+Kosaraju：两遍DFS（正图+反图）
+
+\section{动态规划}
+\process{框架}：1.定义状态 2.转移方程 3.边界 4.计算顺序 5.答案位置
+
+\begin{formula}[核心DP]
+01背包：$dp[w]=\max(dp[w],dp[w-w_i]+v_i)$（逆序）\\
+完全背包：同上但正序\\
+LCS：$dp[i][j]=dp[i-1][j-1]+1$（匹配）$|\max(dp[i-1][j],dp[i][j-1])$\\
+LIS：$O(n\log n)$贪心+二分 or $O(n^2)$ DP\\
+区间DP：$dp[i][j]=\min_k(dp[i][k]+dp[k+1][j]+cost)$
+\end{formula}
+
+状压DP：二进制表示集合、枚举子集\texttt{for(s=S;s;s=(s-1)\&S)}、$O(2^n\cdot n)$或$O(3^n)$\\
+树形DP：DFS后序遍历、$dp[u]$由子节点合并\\
+数位DP：逐位枚举、记是否贴上界、统计满足条件的数
+
+\subsection{优化}
+滚动数组$O(n)\to O(1)$或$O(W)$ | 单调队列/栈滑动窗口$O(n)$ | 斜率优化决策单调$O(n)$ | 四边形不等式区间DP$O(n^2)$
+
+\section{基础结构}
+栈LIFO、队列FIFO、双端队列两端$O(1)$\\
+\concept{单调栈}：维护递增/递减序列、求左/右第一个更大/小元素$O(n)$\\
+\concept{单调队列}：滑动窗口最值$O(n)$
+
+\subsection{哈希表}
+开放寻址vs链地址、负载因子$\alpha=n/m$\\
+冲突：线性探测、二次探测、双哈希\\
+均摊$O(1)$查找/插入/删除\\
+\compare{哈希冲突攻击}：特殊构造使所有key同桶$\to$退化$O(n)$
+
+\subsection{并查集}
+路径压缩+按秩合并$\to$均摊$O(\alpha(n))\approx O(1)$\\
+\texttt{find(x):fa[x]==x?x:fa[x]=find(fa[x])}\\
+\texttt{unite(x,y):fa[find(x)]=find(y)}
+
+\section{字符串}
+\concept{KMP}：失配函数next[]、$O(n+m)$\\
+\concept{Rabin-Karp}：哈希滚动、均摊$O(n+m)$最坏$O(nm)$\\
+\concept{Manacher}：最长回文子串$O(n)$\\
+\concept{后缀数组}：sa[]排序后缀、lcp[]最长公共前缀、构造$O(n\log n)$
+
+\section{数学}
+\concept{GCD}：$\gcd(a,b)=\gcd(b,a\bmod b)$、$O(\log\min(a,b))$\\
+\concept{扩展欧几里得}：$ax+by=\gcd(a,b)$\\
+\concept{快速幂}：$a^n\bmod p$、$O(\log n)$\\
+\concept{费马小定理}：$p$素$\imp a^{p-1}\equiv1\pmod{p}$\\
+逆元$a^{-1}\equiv a^{p-2}\pmod{p}$（$p$素）\\
+\concept{组合数}：$C(n,k)=C(n-1,k-1)+C(n-1,k)$、Lucas定理$C(n,k)\equiv C(n/p,k/p)\cdot C(n\%p,k\%p)\pmod{p}$
+
+\stopcols
+\end{document}

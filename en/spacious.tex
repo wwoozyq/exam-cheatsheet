@@ -1,0 +1,132 @@
+% !TEX program = xelatex
+\documentclass[lang=en,cols=4,paper=a4,fontsize=6.5pt,scheme=classic]{../cheatsheet}
+
+\begin{document}
+\startcols
+
+\section{Sorting}
+
+\begin{cmpbox}[Bubble vs Selection vs Insertion]
+Bubble: adjacent swap, stable, $O(n^2)$\\
+Selection: find min, unstable, $O(n^2)$\\
+Insertion: insert into sorted, stable, best $O(n)$
+\end{cmpbox}
+
+\begin{thmbox}[Quicksort]
+Divide \& conquer: pick pivot $\to$ partition $\to$ recurse\\
+Avg $O(n\log n)$, worst $O(n^2)$ (sorted input)\\
+Unstable, in-place, cache-friendly
+\end{thmbox}
+
+\begin{formula}[Mergesort]
+$T(n) = 2T(n/2) + O(n) \imp O(n\log n)$\\
+Stable, not in-place ($O(n)$ extra space)
+\end{formula}
+
+\subsection{Non-comparison Sorts}
+\begin{itemize}
+\item Counting sort: $O(n+k)$, stable, $k$ = range
+\item Radix sort: $O(d(n+k))$, stable, $d$ = digits
+\item Bucket sort: $O(n+k)$ avg, best with uniform dist.
+\end{itemize}
+
+\section{Trees}
+
+\subsection{Binary Search Tree}
+Property: left $<$ root $<$ right\\
+Search/insert/delete: avg $O(\log n)$, worst $O(n)$
+
+\begin{cmpbox}[AVL vs Red-Black Tree]
+AVL: strict balance $|h_L - h_R| \le 1$, fast lookup, more rotations\\
+RB: relaxed (equal black-height), fewer rotations, used in practice
+\end{cmpbox}
+
+\subsection{Heap}
+\begin{enumerate}
+\item Complete binary tree, array storage
+\item Max-heap: parent $\ge$ child
+\item Build $O(n)$, insert/delete $O(\log n)$
+\item Heapsort: build + extract-max $\imp O(n\log n)$ unstable
+\end{enumerate}
+
+\begin{warnbox}[Pitfall]
+Heapsort is in-place but unstable!\\
+Priority queue $\ne$ heap (abstract vs implementation)
+\end{warnbox}
+
+\section{Graphs}
+
+\subsection{Representation}
+Adj.\ matrix: $O(V^2)$ space, $O(1)$ edge query\\
+Adj.\ list: $O(V+E)$ space, fast neighbor traversal
+
+\begin{cmpbox}[BFS vs DFS]
+BFS: queue, level-order, shortest path (unweighted), space $O(V)$\\
+DFS: stack/recursion, backtracking, topo-sort, space $O(h)$
+\end{cmpbox}
+
+\subsection{Shortest Path}
+
+\begin{thmbox}[Dijkstra]
+Greedy, non-negative weights, $O((V+E)\log V)$ w/ pq\\
+Relaxation: $d[v] = \min(d[v],\; d[u]+w(u,v))$
+\end{thmbox}
+
+\begin{thmbox}[Bellman-Ford]
+$V-1$ rounds relaxing all edges, handles negative weights\\
+$O(VE)$; if relaxable in round $V$ $\imp$ negative cycle
+\end{thmbox}
+
+\begin{formula}[Floyd-Warshall]
+$dp[i][j] = \min(dp[i][j],\; dp[i][k]+dp[k][j])$\\
+All-pairs shortest path, $O(V^3)$, detects neg.\ cycle (diag $<0$)
+\end{formula}
+
+\begin{cmpbox}[Kruskal vs Prim]
+Kruskal: sort edges + union-find, $O(E\log E)$, sparse graphs\\
+Prim: greedy vertex expansion, $O((V+E)\log V)$, dense graphs
+\end{cmpbox}
+
+\section{Dynamic Programming}
+
+\subsection{Framework}
+\begin{enumerate}
+\item Define state (subproblem)
+\item Write recurrence
+\item Set base cases
+\item Determine computation order
+\item Locate answer
+\end{enumerate}
+
+\begin{formula}[Classic DP]
+Knapsack: $dp[i][w] = \max(dp[i\!-\!1][w],\; dp[i\!-\!1][w\!-\!w_i]+v_i)$\\
+LCS: $dp[i][j] = dp[i\!-\!1][j\!-\!1]+1$ (match) $|\max(dp[i\!-\!1][j], dp[i][j\!-\!1])$\\
+LIS: $O(n\log n)$ greedy+bisect or $O(n^2)$ DP
+\end{formula}
+
+\begin{warnbox}[Bitmask DP]
+State = bitmask representing a set; bit $i$=1 means $i$ chosen\\
+Enumerate subsets: \texttt{for(s=S;s;s=(s-1)\&S)}\\
+Complexity: typically $O(2^n \cdot n)$ or $O(3^n)$
+\end{warnbox}
+
+\section{Basic Data Structures}
+
+\begin{cmpbox}[Stack vs Queue vs Deque]
+Stack: LIFO, push/pop $O(1)$\\
+Queue: FIFO, enqueue/dequeue $O(1)$\\
+Deque: both ends, $O(1)$
+\end{cmpbox}
+
+\subsection{Hash Table}
+Open addressing vs chaining\\
+Load factor $\alpha = n/m$\\
+Amortized $O(1)$ lookup/insert/delete
+
+\begin{codebox}[Union-Find Template]
+int find(int x){return fa[x]==x?x:fa[x]=find(fa[x]);}
+void unite(int x,int y){fa[find(x)]=find(y);}
+\end{codebox}
+
+\stopcols
+\end{document}
