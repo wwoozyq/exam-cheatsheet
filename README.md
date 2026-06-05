@@ -1,41 +1,53 @@
 # exam-cheatsheet
 
-A high-density LaTeX cheatsheet template for open-book exams. Supports both **Chinese** and **English** with a single `.cls` file.
+高密度 LaTeX 半开卷速查表模板，一个 `.cls` 文件同时支持**中文**和**英文**。
 
-[中文文档](README_ZH.md)
+[English](README_EN.md)
 
-## Preview
+## 效果预览
 
-| Dense (5-col, 6pt) | Spacious (4-col, 6.5pt) |
-|:---:|:---:|
-| ![dense](screenshots/dense-preview.png) | ![spacious](screenshots/spacious-preview.png) |
+### 拥挤模式（5栏 6pt）— 内容多时用
 
-## Two Styles
+**中文**
+![dense-zh](screenshots/dense-zh.png)
 
-| | Dense | Spacious |
+**English**
+![dense-en](screenshots/dense-en.png)
+
+### 松散模式（4栏 6.5pt）— 内容少时用
+
+**中文**
+![spacious-zh](screenshots/spacious-zh.png)
+
+**English**
+![spacious-en](screenshots/spacious-en.png)
+
+## 两种风格
+
+| | 拥挤模式 | 松散模式 |
 |---|---|---|
-| **When** | Lots of content, every mm counts | Less content, readability matters |
-| **How** | Plain text + inline `\concept{}` `\compare{}` | Boxed environments (`cmpbox`, `thmbox`, `formula`...) |
-| **Typical** | 5 cols, 6pt | 3–4 cols, 6.5–7pt |
-| **Examples** | `zh/dense.tex`, `en/dense.tex` | `zh/spacious.tex`, `en/spacious.tex` |
+| **适用** | 内容多，寸土寸金 | 内容少，可读性优先 |
+| **写法** | 纯文字 + 内联 `\concept{}` `\compare{}` | 框环境（`cmpbox`、`thmbox`、`formula`…） |
+| **典型配置** | 5 栏、6pt | 3–4 栏、6.5–7pt |
+| **示例** | `zh/dense.tex`、`en/dense.tex` | `zh/spacious.tex`、`en/spacious.tex` |
 
-Mix and match — use dense text for most sections, boxed environments only where visual distinction truly helps.
+可以混用 —— 大部分内容用纯文字，只在真正需要视觉区分的地方用框环境。
 
-## Quick Start
+## 快速开始
 
 ```bash
 git clone https://github.com/wwoozyq/exam-cheatsheet.git
 cd exam-cheatsheet
 
-# Pick a starting point and edit
+# 选一个起点，开始编辑
 cp zh/dense.tex zh/my-exam.tex
 vim zh/my-exam.tex
 
-# Build
+# 编译
 cd zh && latexmk -xelatex my-exam.tex
 ```
 
-## Usage
+## 使用方式
 
 ```latex
 \documentclass[
@@ -49,79 +61,79 @@ cd zh && latexmk -xelatex my-exam.tex
 \begin{document}
 \startcols
 
-% Dense style — plain text, inline highlights
-\section{Topic A}
-\concept{Key idea}: explanation $O(n\log n)$\\
-\compare{X vs Y}: X does this; Y does that
+% 拥挤风格 — 纯文字，内联高亮
+\section{主题A}
+\concept{关键概念}：解释 $O(n\log n)$\\
+\compare{X vs Y}：X这样；Y那样
 
-% Spacious style — boxed environments where it helps
+% 松散风格 — 需要视觉分组时用框
 \begin{cmpbox}[A vs B]
-A: property1, property2\\
-B: property3, property4
+A：性质1、性质2\\
+B：性质3、性质4
 \end{cmpbox}
 
 \stopcols
 \end{document}
 ```
 
-## Options
+## 选项说明
 
-| Option | Values | Default | Description |
-|--------|--------|---------|-------------|
-| `lang` | `zh`, `en` | `zh` | Language (affects fonts & abbreviations) |
-| `cols` | `3`–`6` | `5` | Number of columns |
-| `paper` | `a4`, `a3`, `b5` | `a4` | Paper size |
-| `fontsize` | `5pt`–`8pt` | `6pt` | Base font size |
-| `scheme` | `classic`, `ocean`, `forest`, `sunset`, `mono` | `classic` | Color scheme |
+| 选项 | 可选值 | 默认 | 说明 |
+|------|--------|------|------|
+| `lang` | `zh`, `en` | `zh` | 语言（影响字体和缩写宏） |
+| `cols` | `3`–`6` | `5` | 栏数 |
+| `paper` | `a4`, `a3`, `b5` | `a4` | 纸张大小 |
+| `fontsize` | `5pt`–`8pt` | `6pt` | 基础字号 |
+| `scheme` | `classic`, `ocean`, `forest`, `sunset`, `mono` | `classic` | 配色方案 |
 
-## Environments
+## 环境
 
-Use these when you have room and visual grouping helps. Skip them when density is the priority.
+有空间且需要视觉分组时使用，密度优先时跳过。
 
-| Environment | Purpose | Visual |
-|-------------|---------|--------|
-| `cmpbox[title]` | Compare/contrast | Red left bar |
-| `thmbox[title]` | Theorem/formula | Blue left bar |
-| `warnbox[title]` | Warning/pitfall | Orange left bar |
-| `codebox[title]` | Code/pseudocode | Gray background |
-| `formula[title]` | Must-memorize formula | Yellow background |
+| 环境 | 用途 | 外观 |
+|------|------|------|
+| `cmpbox[标题]` | 对比辨析 | 红色左色条 |
+| `thmbox[标题]` | 定理/公式 | 蓝色左色条 |
+| `warnbox[标题]` | 警告/易错点 | 橙色左色条 |
+| `codebox[标题]` | 代码/伪代码 | 灰色背景 |
+| `formula[标题]` | 必背公式 | 黄色背景 |
 
-## Highlight Commands
+## 高亮命令
 
-Inline commands work in both dense and spacious styles.
+内联命令在两种风格下都能用。
 
-| Command | Purpose |
-|---------|---------|
-| `\concept{text}` | Key concept (cyan bold) |
-| `\process{text}` | Process/step (purple bold) |
-| `\category{text}` | Category/type (green bold) |
-| `\compare{text}` | Contrast point (red bold) |
-| `\important{text}` | Important note (blue bold) |
+| 命令 | 用途 |
+|------|------|
+| `\concept{文字}` | 关键概念（青色加粗） |
+| `\process{文字}` | 流程/步骤（紫色加粗） |
+| `\category{文字}` | 分类/类型（绿色加粗） |
+| `\compare{文字}` | 对比辨析（红色加粗） |
+| `\important{文字}` | 重要提示（蓝色加粗） |
 
-## Abbreviation Macros
+## 缩写宏
 
-**Chinese mode:** `\dn` (定义), `\thm` (定理), `\prf` (证), `\eg` (例), `\nb` (注)
+**中文模式：** `\dn`（定义）、`\thm`（定理）、`\prf`（证）、`\eg`（例）、`\nb`（注）
 
-**English mode:** `\defn` (Def.), `\thm` (Thm.), `\prf` (Pf.), `\eg` (e.g.), `\nb` (N.B.)
+**英文模式：** `\defn`（Def.）、`\thm`（Thm.）、`\prf`（Pf.）、`\eg`（e.g.）、`\nb`（N.B.）
 
-**Both:** `\iff` ($\Leftrightarrow$), `\imp` ($\Rightarrow$), `\bcs` ($\because$), `\so` ($\therefore$)
+**通用：** `\iff`（$\Leftrightarrow$）、`\imp`（$\Rightarrow$）、`\bcs`（$\because$）、`\so`（$\therefore$）
 
-## Requirements
+## 环境依赖
 
-- **XeLaTeX** (via TeX Live or MiKTeX)
-- **latexmk** (for Makefile builds)
-- Chinese mode uses system CJK fonts automatically (macOS: Songti/Heiti, Linux: Fandol/Noto, Windows: SimSun/SimHei)
+- **XeLaTeX**（TeX Live 或 MiKTeX）
+- **latexmk**（Makefile 构建需要）
+- 中文模式自动使用系统 CJK 字体（macOS: 宋体/黑体，Linux: Fandol/Noto，Windows: 宋体/微软雅黑）
 
-## Color Schemes
+## 配色方案
 
-| Scheme | Style |
-|--------|-------|
-| `classic` | Blue/purple/cyan — versatile default |
-| `ocean` | Blue/teal — easy on the eyes |
-| `forest` | Green/brown — calm, earthy |
-| `sunset` | Warm reds/oranges — high contrast |
-| `mono` | Grayscale — B&W print friendly |
+| 方案 | 风格 |
+|------|------|
+| `classic` | 蓝紫青 — 通用默认 |
+| `ocean` | 蓝绿系 — 护眼 |
+| `forest` | 绿棕系 — 沉稳 |
+| `sunset` | 暖色系 — 高对比 |
+| `mono` | 灰阶 — 黑白打印友好 |
 
-## License
+## 许可证
 
 MIT
