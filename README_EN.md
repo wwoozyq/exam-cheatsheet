@@ -134,6 +134,57 @@ Inline commands work in both dense and spacious styles.
 | `sunset` | Warm reds/oranges — high contrast |
 | `mono` | Grayscale — B&W print friendly |
 
+## AI Agent Guide
+
+> If you are an AI agent (ChatGPT, Claude, Cursor, Copilot, etc.) and the user asks you to generate a cheatsheet with this template, follow the workflow below.
+
+### Workflow
+
+1. **Confirm parameters** (ask once): paper (a4/a3/b5), columns (3–6), font size (5pt–8pt), color scheme (classic/ocean/forest/sunset/mono), language (zh/en), priority topics
+2. **Read materials**: extract all key points from the user's course files (PDF/PPT/MD/images)
+3. **Generate .tex**: use `cheatsheet.cls` with `zh/dense.tex` or `en/dense.tex` as reference to produce a complete `.tex` file
+4. **Iterate**: edit the `.tex` directly based on user feedback
+
+### Content Organization
+
+- **Group by topic**, not by source file order. Merge the same topic scattered across multiple files into one `\section`
+- Priority topics go first with ~1.5× content coverage
+- Cover three essentials for each topic:
+  - **Concept comparison**: use `\compare{}` or `cmpbox` environment
+  - **Process/algorithm steps**: use `\process{}` + numbered list
+  - **Must-memorize formulas**: use `\important{}` highlight
+
+### Density Tips
+
+**Text compression:**
+- Remove filler words; use noun phrases instead of full sentences
+- Separate with slashes/bullets: `Quicksort: divide-and-conquer, in-place, unstable, O(n log n)`
+- Use symbols: `∵∴ ⇒⇔ ∀∃ ∈∉ ⊆⊇ ∪∩ → ≤≥ ≈ ±`
+- Use built-in abbreviation macros: `\defn \thm \prf \eg \nb \iff \imp \bcs \so`
+
+**Layout rules:**
+- Use `\\` or `\smallskip` between paragraphs, no blank lines
+- Inline math `$...$` only, never `equation` environments
+- Oversized formulas: `\resizebox{\linewidth}{!}{$ ... $}`
+
+### Common User Requests
+
+| User says | Action |
+|---|---|
+| "Too cramped" | Increase font +0.5pt or reduce columns by 1 |
+| "Too much whitespace" | Decrease font -0.5pt or add secondary content |
+| "Add a section on X" | Insert `\section{X}` under the appropriate topic |
+| "Make it a comparison table" | Convert to `cmpbox` or `tabular` |
+| "B&W printing" | Switch to `scheme=mono` |
+
+### Building
+
+Requires **XeLaTeX**:
+
+```bash
+latexmk -xelatex cheatsheet.tex
+```
+
 ## License
 
 MIT
